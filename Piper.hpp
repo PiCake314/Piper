@@ -2,12 +2,12 @@
 
 #include <concepts>
 
-template <typename T>
-concept container = requires(T t){
-    t.begin();
-    t.end();
-    typename T::value_type;
-};
+// template <typename T>
+// concept container = requires(T t){
+//     t.begin();
+//     t.end();
+//     typename T::value_type;
+// };
 
 
 template <typename Derived>
@@ -35,7 +35,7 @@ public:
 //     return p.derived->operator()(v, p.init, p.func);
 // }
 
-template <container V, template <typename, typename> class P, typename INIT, std::invocable<INIT, typename V::value_type> Func>
+template <std::ranges::range V, template <typename, typename> class P, typename INIT, std::invocable<INIT, std::decay_t<std::ranges::range_value_t<V>>> Func>
 auto operator | (V v, P<INIT, Func> p){
     return p.derived->operator()(v, p.init, p.func);
 }

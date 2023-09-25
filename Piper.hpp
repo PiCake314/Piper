@@ -17,8 +17,9 @@ public:
     // value_type operator()(V, value_type, Func) const; // defined by the derived class
 
     template<typename INIT, typename Func>
-    Package<INIT, Func> operator()(INIT init, Func func) const{
-        return Package<INIT, Func>{init, func, const_cast<Derived*>(static_cast<const Derived*>(this))};
+    Package<INIT, Func> operator()(INIT&& init, Func&& func) const{
+        // return Package<INIT, Func>{init, func, const_cast<Derived*>(static_cast<const Derived*>(this))};
+        return Package<INIT, Func>{std::forward<INIT>(init), std::forward<Func>(func), const_cast<Derived*>(static_cast<const Derived*>(this))};
     }
 };
 
@@ -28,6 +29,7 @@ public:
 // }
 
 template <std::ranges::range V, template <typename, typename> class P, typename INIT, std::invocable<INIT, std::ranges::range_value_t<V>> Func>
-auto operator | (V v, P<INIT, Func> p){
-    return p.derived->operator()(v, p.init, p.func);
+auto operator | (V&& v, P<INIT, Func> p){
+    // return p.derived->operator()(v, p.init, p.func);
+    return p.derived->operator()(std::forward<V>(v), p.init, p.func);
 }

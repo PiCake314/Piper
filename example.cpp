@@ -8,16 +8,18 @@
 
 struct Fold : Piper<Fold>{
     template<std::ranges::range V, typename INIT, std::invocable<INIT, std::decay_t<std::ranges::range_value_t<V>>> OP = decltype(std::plus{})>
-    INIT operator()(V &&v, INIT init, OP func = std::plus{}) const {
+    INIT operator()(V&& v, INIT&& init, OP func = std::plus{}) const {
         for(auto&& elt : v)
-            init = func(init, elt);
+            // init = func(init, elt);
+            // init = std::invoke(func, std::forward<INIT>(init), elt);
+            init = func(std::forward<INIT>(init), elt);
 
         return init;
     }
     
     template<typename INIT, typename OP = decltype(std::plus{})>
-    auto operator()(INIT init, OP func = std::plus{}) const{
-        return Piper<Fold>::operator()<INIT, OP>(init, func);
+    auto operator()(INIT&& init, OP&& func = std::plus{}) const{
+        return Piper<Fold>::operator()(std::forward<INIT>(init), std::forward<OP>(func));
     }
 };
 

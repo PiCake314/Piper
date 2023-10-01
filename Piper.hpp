@@ -1,35 +1,35 @@
 #pragma once
 
 #include <concepts>
+#include <ranges>
+#include <utility>
 
 template <typename Derived>
 class Piper{
-public:
-
-    template<typename INIT, typename Func>
+    template<typename... Types>
     struct Package{
-        INIT init;
-        Func func;
-        Derived* derived;
+        const Derived* derived;
+        std::tuple<std::decay_t<Types>...> args;
     };
 
-    // template<container V, typename value_type, typename Func>
-    // value_type operator()(V, value_type, Func) const; // defined by the derived class
-
-    template<typename INIT, typename Func>
-    Package<INIT, Func> operator()(INIT&& init, Func&& func) const{
-        // return Package<INIT, Func>{init, func, const_cast<Derived*>(static_cast<const Derived*>(this))};
-        return Package<INIT, Func>{std::forward<INIT>(init), std::forward<Func>(func), const_cast<Derived*>(static_cast<const Derived*>(this))};
+public:
+    template<typename... Types>
+    Package<Types...> operator()(Types&&... params) const{
+        return {static_cast<const Derived*>(this), {params...}};
     }
 };
 
-// template <container V, typename INIT, std::invocable<INIT, typename V::value_type> Func, template <class, typename> class P, typename Derived>
-// auto operator | (V v, typename Piper<Derived>:: template Package<INIT, Func> p){
-//     return p.derived->operator()(v, p.init, p.func);
-// }
 
-template <std::ranges::range V, template <typename, typename> class P, typename INIT, std::invocable<INIT, std::ranges::range_value_t<V>> Func>
-auto operator | (V&& v, P<INIT, Func> p){
-    // return p.derived->operator()(v, p.init, p.func);
-    return p.derived->operator()(std::forward<V>(v), p.init, p.func);
+template <size_t... Is>
+auto piperHelpr( std::index_sequence<Is...>, auto&& V, auto&& p){
+    return p.derived->operator()(std::forward<decltype(V)>(V), std::forward<decltype(std::get<Is>(p.args))>(std::get<Is>(p.args))...);
+}
+
+
+template <std::ranges::range V, template <typename...> class P, typename... Types>
+auto operator | (V&& v, P<Types...> p){
+    std::tuple_size<decltype(p.args)> size;
+
+    return piperHelpr(std::make_index_sequence<size>(), std::forward<V>(v), std::forward<P<Types...>>(p));
+    // return p.derived->operator()(std::forward<V>(v), std::forward<Types>(std::get<Types>(p.args))...);
 }

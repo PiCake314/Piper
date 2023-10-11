@@ -1,13 +1,20 @@
 #include <iostream>
-#include <numeric>
-#include <algorithm>
 #include <vector>
+#include <array>
 
 #include "Piper.hpp"
 
+struct Ident{
+    template<typename T>
+    constexpr T operator()(T&& t) const{
+        return std::forward<T>(t);
+    }
+};
+
+
 struct Fold : Piper<Fold>{
     template<std::ranges::range V, typename INIT, std::invocable<INIT, std::ranges::range_value_t<V>> OP = decltype(std::plus{})>
-    INIT operator()(V&& v, INIT init, OP func = std::plus{}) const {
+    constexpr INIT operator()(V&& v, INIT init, OP func = std::plus{}) const {
         for(auto&& elt : v)
             init = func(init, std::forward<decltype(elt)>(elt));
 
@@ -15,41 +22,42 @@ struct Fold : Piper<Fold>{
     }
     
     template<typename INIT, typename OP = decltype(std::plus{})>
-    auto operator()(INIT&& init, OP&& func = std::plus{}) const{
+    constexpr auto operator()(INIT&& init, OP&& func = std::plus{}) const{
         return static_cast<const Piper<Fold>*>(this)->operator()(std::forward<INIT>(init), std::forward<OP>(func));
     }
 };
 Fold fold;
 
 
-struct Slice : Piper<Slice>{
+struct Map : Piper<Map>{
+    template<std::ranges::range V, std::invocable<std::ranges::range_value_t<V>> OP>
+    constexpr auto operator()(V&& v, OP func) const {
+        std::clog << "Map\n";
 
-    std::string_view operator()(std::string_view sv, size_t start, size_t end) const{
-        std::clog << "Start: " << start << '\n';
-        std::clog << "End: " << end << '\n';
-        return sv.substr(start, end - start);
+        std::vector<std::invoke_result_t<OP, std::ranges::range_value_t<V>>> result;
+        result.reserve(std::ranges::size(v));
+
+        for(auto&& elt : v)
+            result.push_back(func(std::forward<decltype(elt)>(elt)));
+
+        return result;
     }
-
-    constexpr auto operator()(size_t start, size_t end) const{
-        return static_cast<const Piper<Slice>*>(this)->operator()(start, end);
+    
+    template<typename OP = Ident>
+    constexpr auto operator()(OP func = Ident{}) const{
+        return static_cast<const Piper<Map>*>(this)->operator()(std::forward<OP>(func));
     }
 };
-Slice slice;
-
+Map map;
 
 int main(){
-    using std::operator""s;
     std::vector v = {1, 2, 3, 4, 5};
-    auto s = "Hello World"s;
 
+    // auto v2 = v | map([](auto x){ return x * x; });
+    // auto value = v2 | fold(0);
+    auto func = map([](auto x){ return x * x; }) | fold(0);
+    // auto value = func(v);
+    auto value = v | func(); // have to call it with () because of the way the operator| is defined
 
-    // auto value = fold(v, 0);
-    // auto value = v | fold(0);
-    // auto value = slice(s, 1, 4);
-    auto value = s | slice(1, 4);
-
-    std::cout << value << std::endl;
-
-    // std::cout << unhash << std::endl;
-
+    std::clog << value << '\n';
 }

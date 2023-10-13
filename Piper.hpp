@@ -2,7 +2,6 @@
 
 #include <concepts>
 #include <ranges>
-#include <utility>
 
 
 template <typename Derived> class Piper;
@@ -23,12 +22,12 @@ struct Package{
     std::tuple<std::decay_t<Types>...> args;
 };
 
+
 template <typename Derived>
 class Piper{
 public:
     template<typename... Types>
     constexpr Package<Derived, Types...> operator()(Types&&... params) const{
-        std::puts("Packaging");
         return {static_cast<const Derived*>(this), {params...}};
     }
 };
@@ -37,23 +36,20 @@ public:
 
 template <typename D, typename... Types>
 constexpr auto operator|(std::ranges::range auto v, Package<D, Types...> p){
-    std::puts("Range | Pack");
-    auto size = std::tuple_size<std::tuple<Types...>>{};
+    auto size = std::tuple_size<decltype(p.args)>{};
     return piperHelpr(std::make_index_sequence<size>(), v, p);
 }
 
 
 
-template <size_t... Is>
-constexpr auto piperHelpr(std::index_sequence<Is...>, Packaged auto&& p, std::ranges::range auto&& v){ // helps unpack the tuple by index instead of type to avoid ambiguity
-    std::puts("Helper");
+template <size_t... Is>                                                  // doesn't have to be a range
+constexpr auto piperHelpr(std::index_sequence<Is...>, Packaged auto&& p, /* std::ranges::range */ auto&& v){ // helps unpack the tuple by index instead of type to avoid ambiguity
     return p.derived->operator()(std::forward<decltype(v)>(v), std::forward<decltype(std::get<Is>(p.args))>(std::get<Is>(p.args))...);
 }
 
 
 template < PiperType D, typename... Types>
-constexpr auto operator|(std::vector<int> v, Package<D, Types...> p){ // main operator
-    std::puts("Range | Pack");
+constexpr auto operator|(std::ranges::range auto v, Package<D, Types...> p){ // main operator
     auto size = std::tuple_size<std::tuple<Types...>>{};
     return piperHelpr(std::make_index_sequence<size>(), p, v);
 }
@@ -67,7 +63,6 @@ struct Composed : Piper<Composed<P1, P2>>{
     constexpr Composed(P1 f1, P2 f2) : p1(std::forward<P1>(f1)), p2(std::forward<P2>(f2)){}
 
     constexpr auto operator()(std::ranges::range auto v) const{ // regular syntax
-        std::puts("Composed<>::operator()");
         auto size1 = std::tuple_size<decltype(p1.args)>{};
         auto size2 = std::tuple_size<decltype(p2.args)>{};
 
@@ -80,7 +75,6 @@ struct Composed : Piper<Composed<P1, P2>>{
 
     template <typename... Types>
     constexpr auto operator()(Types&&... params) const{ // returns a package to invoke |
-        std::puts("Composed<>::operator() Forwarding to piper");
         return static_cast<const Piper<Composed<P1, P2>>*>(this)->operator()(std::forward<Types>(params)...);
     }
 
@@ -89,7 +83,5 @@ struct Composed : Piper<Composed<P1, P2>>{
 
 template <Packaged F1, Packaged F2>
 constexpr auto operator|(F1&& f1, F2&& f2){
-    std::puts("Composing");
-
     return Composed{std::forward<F1>(f1), std::forward<F2>(f2)};
 }

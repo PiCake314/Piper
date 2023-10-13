@@ -30,12 +30,11 @@ Fold fold;
 
 
 struct Map : Piper<Map>{
-    template<std::ranges::range V, std::invocable<std::ranges::range_value_t<V>> OP>
-    constexpr auto operator()(V&& v, OP func) const {
-        std::clog << "Map\n";
-
-        std::vector<std::invoke_result_t<OP, std::ranges::range_value_t<V>>> result;
-        result.reserve(std::ranges::size(v));
+    template<std::ranges::range V, std::invocable<std::ranges::range_value_t<V>> OP = Ident>
+    constexpr auto operator()(V&& v, OP func = Ident{}) const {
+        // std::vector<std::invoke_result_t<OP, std::ranges::range_value_t<V>>> result;
+        std::remove_cvref_t<V> result;
+        // result.reserve(std::ranges::size(v));
 
         for(auto&& elt : v)
             result.push_back(func(std::forward<decltype(elt)>(elt)));
@@ -44,20 +43,40 @@ struct Map : Piper<Map>{
     }
     
     template<typename OP = Ident>
-    constexpr auto operator()(OP func = Ident{}) const{
+    constexpr auto operator()(OP func = Ident{}) const {
         return static_cast<const Piper<Map>*>(this)->operator()(std::forward<OP>(func));
     }
 };
 Map map;
 
+
+struct Adder : Piper<Adder>{
+    constexpr int operator()(int x, int amount) const {
+        return x + amount;
+    }
+
+    constexpr auto operator()(int amount) const {
+        return static_cast<const Piper<Adder>*>(this)->operator()(amount);
+    }
+};
+Adder adder;
+
+
 int main(){
+    using std::operator""s;
+
     std::vector v = {1, 2, 3, 4, 5};
 
-    // auto v2 = v | map([](auto x){ return x * x; });
-    // auto value = v2 | fold(0);
-    auto func = map([](auto x){ return x * x; }) | fold(0);
-    // auto value = func(v);
-    auto value = v | func(); // have to call it with () because of the way the operator| is defined
+    auto func = map([](int x){ return x * x; }) | fold(0);
 
-    std::clog << value << '\n';
+    auto add3 = func() | adder(3);
+
+    // std::clog << typeid(add3()).name() << std::endl;
+
+    auto value = v | add3();
+
+    
+    std::cout << value << std::endl;
+
+
 }

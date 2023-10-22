@@ -7,7 +7,8 @@
 template <typename Derived> class Piper;
 
 template <typename T>
-concept PiperType = std::is_base_of_v<Piper<T>, T>;
+// concept PiperType = std::is_base_of_v<Piper<T>, T>;
+concept PiperType = std::is_base_of_v<Piper<std::remove_cvref_t<T>>, std::remove_cvref_t<T>>;
 
 
 template <typename T>
@@ -19,7 +20,12 @@ concept Packaged = requires(T t){
 template<PiperType D, typename... Types>
 struct Package{
     const D* derived;
-    std::tuple<std::decay_t<Types>...> args;
+    std::tuple<Types...> args;
+
+
+    constexpr auto operator()(auto v){
+        return v | *this;
+    }
 };
 
 
@@ -33,27 +39,10 @@ public:
 };
 
 
-
-template <typename D, typename... Types>
-constexpr auto operator|(std::ranges::range auto v, Package<D, Types...> p){
-    auto size = std::tuple_size<decltype(p.args)>{};
-    return piperHelpr(std::make_index_sequence<size>(), v, p);
-}
-
-
-
 template <size_t... Is>                                                  // doesn't have to be a range
 constexpr auto piperHelpr(std::index_sequence<Is...>, Packaged auto&& p, /* std::ranges::range */ auto&& v){ // helps unpack the tuple by index instead of type to avoid ambiguity
     return p.derived->operator()(std::forward<decltype(v)>(v), std::forward<decltype(std::get<Is>(p.args))>(std::get<Is>(p.args))...);
 }
-
-
-template < PiperType D, typename... Types>
-constexpr auto operator|(std::ranges::range auto v, Package<D, Types...> p){ // main operator
-    auto size = std::tuple_size<std::tuple<Types...>>{};
-    return piperHelpr(std::make_index_sequence<size>(), p, v);
-}
-
 
 template <typename P1, typename P2>
 struct Composed : Piper<Composed<P1, P2>>{
@@ -81,7 +70,42 @@ struct Composed : Piper<Composed<P1, P2>>{
 };
 
 
-template <Packaged F1, Packaged F2>
+// for composing two pipers
+template <typename F1, typename F2>
+requires ((PiperType<F1> || Packaged<F1>) && (PiperType<F2> || Packaged<F2>))
 constexpr auto operator|(F1&& f1, F2&& f2){
-    return Composed{std::forward<F1>(f1), std::forward<F2>(f2)};
+    if constexpr(PiperType<F1> && PiperType<F2>){
+        return Composed{std::forward<decltype(f1())>(f1()), std::forward<decltype(f2())>(f2())};
+    }
+    else if constexpr(PiperType<F1>){
+        return Composed{std::forward<decltype(f1())>(f1()), std::forward<F2>(f2)};
+    }
+    else if constexpr(PiperType<F2>){
+        return Composed{std::forward<F1>(f1), std::forward<decltype(f2())>(f2())};
+    }
+    else{
+        return Composed{std::forward<F1>(f1), std::forward<F2>(f2)};
+    }
 }
+
+
+
+template <typename V, Packaged P>
+requires (!Packaged<V> && !PiperType<V>)
+constexpr auto operator|(V&& v, P&& p){
+    auto size = std::tuple_size<decltype(p.args)>{};
+    return piperHelpr(std::make_index_sequence<size>(), std::forward<P>(p), std::forward<V>(v));
+}
+
+template <typename V>
+requires (!Packaged<V> && !PiperType<V>)
+constexpr auto operator|(V&& v, PiperType auto&& p2){
+    return v | p2();
+}
+
+
+// // macro to make the above easier
+// #define PIPER_OP(name) constexpr auto operator()(auto... args) const {\
+//     return static_cast<const Piper<name>*>(this)->operator()(std::forward<decltype(args)>(args)...);\
+// }\
+

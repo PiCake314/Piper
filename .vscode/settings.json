@@ -1,13 +1,13 @@
 {
     "files.associations": {
-        "concepts": "cpp",
+        "__config": "cpp",
+        "ostream": "cpp",
+        "__locale": "cpp",
         "__bit_reference": "cpp",
         "__bits": "cpp",
-        "__config": "cpp",
         "__debug": "cpp",
         "__errc": "cpp",
         "__hash_table": "cpp",
-        "__locale": "cpp",
         "__mutex_base": "cpp",
         "__node_handle": "cpp",
         "__split_buffer": "cpp",
@@ -43,7 +43,6 @@
         "mutex": "cpp",
         "new": "cpp",
         "optional": "cpp",
-        "ostream": "cpp",
         "ratio": "cpp",
         "span": "cpp",
         "sstream": "cpp",
@@ -62,9 +61,9 @@
         "__string": "cpp",
         "chrono": "cpp",
         "compare": "cpp",
+        "concepts": "cpp",
         "numeric": "cpp",
         "ranges": "cpp",
-        "algorithm": "cpp",
-        "iterator": "cpp"
+        "algorithm": "cpp"
     }
 }

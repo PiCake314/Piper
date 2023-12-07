@@ -44,10 +44,10 @@ cmake_force:
 SHELL = /bin/sh
 
 # The CMake executable.
-CMAKE_COMMAND = /opt/homebrew/Cellar/cmake/3.27.4/bin/cmake
+CMAKE_COMMAND = /opt/homebrew/Cellar/cmake/3.27.7/bin/cmake
 
 # The command to remove a file.
-RM = /opt/homebrew/Cellar/cmake/3.27.4/bin/cmake -E rm -f
+RM = /opt/homebrew/Cellar/cmake/3.27.7/bin/cmake -E rm -f
 
 # Escaping for special characters.
 EQUALS = =
@@ -69,28 +69,28 @@ include CMakeFiles/Piper.dir/progress.make
 # Include the compile flags for this target's objects.
 include CMakeFiles/Piper.dir/flags.make
 
-CMakeFiles/Piper.dir/example.cpp.o: CMakeFiles/Piper.dir/flags.make
-CMakeFiles/Piper.dir/example.cpp.o: /Users/alialmutawa/Downloads/Coding/C/Pipes/Piper/example.cpp
-CMakeFiles/Piper.dir/example.cpp.o: CMakeFiles/Piper.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/alialmutawa/Downloads/Coding/C/Pipes/Piper/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/Piper.dir/example.cpp.o"
-	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/Piper.dir/example.cpp.o -MF CMakeFiles/Piper.dir/example.cpp.o.d -o CMakeFiles/Piper.dir/example.cpp.o -c /Users/alialmutawa/Downloads/Coding/C/Pipes/Piper/example.cpp
+CMakeFiles/Piper.dir/main.cpp.o: CMakeFiles/Piper.dir/flags.make
+CMakeFiles/Piper.dir/main.cpp.o: /Users/alialmutawa/Downloads/Coding/C/Pipes/Piper/main.cpp
+CMakeFiles/Piper.dir/main.cpp.o: CMakeFiles/Piper.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/alialmutawa/Downloads/Coding/C/Pipes/Piper/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/Piper.dir/main.cpp.o"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/Piper.dir/main.cpp.o -MF CMakeFiles/Piper.dir/main.cpp.o.d -o CMakeFiles/Piper.dir/main.cpp.o -c /Users/alialmutawa/Downloads/Coding/C/Pipes/Piper/main.cpp
 
-CMakeFiles/Piper.dir/example.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/Piper.dir/example.cpp.i"
-	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/alialmutawa/Downloads/Coding/C/Pipes/Piper/example.cpp > CMakeFiles/Piper.dir/example.cpp.i
+CMakeFiles/Piper.dir/main.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/Piper.dir/main.cpp.i"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/alialmutawa/Downloads/Coding/C/Pipes/Piper/main.cpp > CMakeFiles/Piper.dir/main.cpp.i
 
-CMakeFiles/Piper.dir/example.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/Piper.dir/example.cpp.s"
-	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/alialmutawa/Downloads/Coding/C/Pipes/Piper/example.cpp -o CMakeFiles/Piper.dir/example.cpp.s
+CMakeFiles/Piper.dir/main.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/Piper.dir/main.cpp.s"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/alialmutawa/Downloads/Coding/C/Pipes/Piper/main.cpp -o CMakeFiles/Piper.dir/main.cpp.s
 
 # Object files for target Piper
 Piper_OBJECTS = \
-"CMakeFiles/Piper.dir/example.cpp.o"
+"CMakeFiles/Piper.dir/main.cpp.o"
 
 # External object files for target Piper
 Piper_EXTERNAL_OBJECTS =
 
-Piper: CMakeFiles/Piper.dir/example.cpp.o
+Piper: CMakeFiles/Piper.dir/main.cpp.o
 Piper: CMakeFiles/Piper.dir/build.make
 Piper: CMakeFiles/Piper.dir/link.txt
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/Users/alialmutawa/Downloads/Coding/C/Pipes/Piper/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Linking CXX executable Piper"

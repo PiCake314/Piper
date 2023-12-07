@@ -48,10 +48,10 @@ cmake_force:
 SHELL = /bin/sh
 
 # The CMake executable.
-CMAKE_COMMAND = /opt/homebrew/Cellar/cmake/3.27.4/bin/cmake
+CMAKE_COMMAND = /opt/homebrew/Cellar/cmake/3.27.7/bin/cmake
 
 # The command to remove a file.
-RM = /opt/homebrew/Cellar/cmake/3.27.4/bin/cmake -E rm -f
+RM = /opt/homebrew/Cellar/cmake/3.27.7/bin/cmake -E rm -f
 
 # Escaping for special characters.
 EQUALS = =
@@ -68,7 +68,7 @@ CMAKE_BINARY_DIR = /Users/alialmutawa/Downloads/Coding/C/Pipes/Piper/build
 # Special rule for the target edit_cache
 edit_cache:
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --cyan "Running CMake cache editor..."
-	/opt/homebrew/Cellar/cmake/3.27.4/bin/ccmake -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
+	/opt/homebrew/Cellar/cmake/3.27.7/bin/ccmake -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
 .PHONY : edit_cache
 
 # Special rule for the target edit_cache
@@ -78,7 +78,7 @@ edit_cache/fast: edit_cache
 # Special rule for the target rebuild_cache
 rebuild_cache:
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --cyan "Running CMake to regenerate build system..."
-	/opt/homebrew/Cellar/cmake/3.27.4/bin/cmake --regenerate-during-build -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
+	/opt/homebrew/Cellar/cmake/3.27.7/bin/cmake --regenerate-during-build -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
 .PHONY : rebuild_cache
 
 # Special rule for the target rebuild_cache
@@ -129,29 +129,29 @@ Piper/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Piper.dir/build.make CMakeFiles/Piper.dir/build
 .PHONY : Piper/fast
 
-example.o: example.cpp.o
-.PHONY : example.o
+main.o: main.cpp.o
+.PHONY : main.o
 
 # target to build an object file
-example.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Piper.dir/build.make CMakeFiles/Piper.dir/example.cpp.o
-.PHONY : example.cpp.o
+main.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Piper.dir/build.make CMakeFiles/Piper.dir/main.cpp.o
+.PHONY : main.cpp.o
 
-example.i: example.cpp.i
-.PHONY : example.i
+main.i: main.cpp.i
+.PHONY : main.i
 
 # target to preprocess a source file
-example.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Piper.dir/build.make CMakeFiles/Piper.dir/example.cpp.i
-.PHONY : example.cpp.i
+main.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Piper.dir/build.make CMakeFiles/Piper.dir/main.cpp.i
+.PHONY : main.cpp.i
 
-example.s: example.cpp.s
-.PHONY : example.s
+main.s: main.cpp.s
+.PHONY : main.s
 
 # target to generate assembly for a file
-example.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Piper.dir/build.make CMakeFiles/Piper.dir/example.cpp.s
-.PHONY : example.cpp.s
+main.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Piper.dir/build.make CMakeFiles/Piper.dir/main.cpp.s
+.PHONY : main.cpp.s
 
 # Help Target
 help:
@@ -162,9 +162,9 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... Piper"
-	@echo "... example.o"
-	@echo "... example.i"
-	@echo "... example.s"
+	@echo "... main.o"
+	@echo "... main.i"
+	@echo "... main.s"
 .PHONY : help
 
 

@@ -1,0 +1,8 @@
+[
+{
+  "directory": "/Users/alialmutawa/Downloads/Coding/C/Pipes/Piper/build",
+  "command": "/usr/bin/clang++ -g -std=gnu++20 -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX13.3.sdk -std=c++20 -Wall -Wextra -Wpedantic -Werror -O0 -o CMakeFiles/Piper.dir/main.cpp.o -c /Users/alialmutawa/Downloads/Coding/C/Pipes/Piper/main.cpp",
+  "file": "/Users/alialmutawa/Downloads/Coding/C/Pipes/Piper/main.cpp",
+  "output": "CMakeFiles/Piper.dir/main.cpp.o"
+}
+]

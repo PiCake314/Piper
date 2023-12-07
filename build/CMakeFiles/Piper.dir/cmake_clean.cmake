@@ -1,6 +1,6 @@
 file(REMOVE_RECURSE
-  "CMakeFiles/Piper.dir/example.cpp.o"
-  "CMakeFiles/Piper.dir/example.cpp.o.d"
+  "CMakeFiles/Piper.dir/main.cpp.o"
+  "CMakeFiles/Piper.dir/main.cpp.o.d"
   "Piper"
   "Piper.pdb"
 )

@@ -8,7 +8,7 @@ set(CMAKE_DEPENDS_LANGUAGES
 
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
-  "/Users/alialmutawa/Downloads/Coding/C/Pipes/Piper/example.cpp" "CMakeFiles/Piper.dir/example.cpp.o" "gcc" "CMakeFiles/Piper.dir/example.cpp.o.d"
+  "/Users/alialmutawa/Downloads/Coding/C/Pipes/Piper/main.cpp" "CMakeFiles/Piper.dir/main.cpp.o" "gcc" "CMakeFiles/Piper.dir/main.cpp.o.d"
   )
 
 # Targets to which this target links which contain Fortran sources.

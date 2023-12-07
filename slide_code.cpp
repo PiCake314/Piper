@@ -115,12 +115,16 @@ class Composer : Piper<Composer> {
     F1 f1;
     F2 f2;
 
-    template <typename F1_, typename F2_>
-    Composer(F1_&& f1, F2_&& f2) : f1(std::forward<F1>(f1)), f2(std::forward<F2>(f2)){}
+    Composer(F1_f1, F2 _f2)
+    : f1{_f1}, f2{_f2} {}
 
-    template <typename... Args>
-    auto operator()(Args&&... args) const {
-        return f2(f1(std::forward<Args>(args)...));
+    auto operator()(auto t) const {
+        return f2(f1(t));
+    }
+
+    template <typename... Types>
+    auto operator()(Types... params) const { // returns a package to invoke |
+        return static_cast<const Piper<Composed<P1, P2>>*>(this)->make_package(params...);
     }
 };
 

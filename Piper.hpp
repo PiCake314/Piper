@@ -66,13 +66,6 @@ struct Composed : Piper<Composed<P1, P2>>{
 
     template <typename T>
     inline constexpr auto operator()(T&& v) const { // regular syntax
-        // auto size1 = std::tuple_size<decltype(p1.args)>{};
-        // auto size2 = std::tuple_size<decltype(p2.args)>{};
-
-        // auto Is1 = std::make_index_sequence<size1>{};
-        // auto Is2 = std::make_index_sequence<size2>{};
-
-        // return piperHelpr(Is2, p2, piperHelpr(Is1, p1, std::forward<T>(v)));
         return p2(p1(std::forward<T>(v)));
     }
 

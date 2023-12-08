@@ -101,6 +101,18 @@ struct Adder : Piper<Adder>{
 Adder adder;
 
 
+struct VoidS : Piper<VoidS> {
+
+    auto operator()(std::string_view sv) const {
+        std::cout << sv;
+    }
+
+    auto operator()()const {
+        return static_cast<const Piper<VoidS>*> (this)->make_package();
+    }
+};
+VoidS voider;
+
 struct Multiplier : Piper<Multiplier>{
     constexpr int operator()(int a, int b) const {
         return a * b;
@@ -119,14 +131,16 @@ using namespace std::string_literals;
 int main(){
 
     // example 1
-    std::string name = "Ali Almutawa";
+    // std::string name = "Ali Almutawa";
 
-    auto first3 = slicer(0, 3);
-    auto capitalize = map([](auto&& s){ return std::toupper(s); });
+    // auto first3 = slicer(0, 3);
+    // auto capitalize = map([](auto&& s){ return std::toupper(s); });
 
-    auto capFirst3 = capitalize | first3;
-    std::cout << (name | capFirst3()) << '\n';
+    // auto capFirst3 = capitalize | first3;
+    // std::cout << (name | capFirst3()) << '\n';
 
+    voider("Hello!");
+    "Hello!" | voider();
 
     // example 2
     // std::vector vec = {1, 2, 3, 4, 5};
@@ -134,27 +148,18 @@ int main(){
     // auto doubleIt = map([](auto n){ return n * 2; });
     // auto doubleEvensSum = even | doubleIt | fold;
 
-    // return std::accumulate(std::begin(vec), std::end(vec), 10, [](auto a, auto b){ return a + b * 2; });
-    // return fold(vec, 10, [](auto a, auto b){ return a + b * 2; });
-
-
     // std::cout << (vec | doubleEvensSum) << '\n';
 
 
+
+    // return std::accumulate(std::begin(vec), std::end(vec), 10, [](auto a, auto b){ return a + b * 2; });
+    // return fold(vec, 10, [](auto a, auto b){ return a + b * 2; });
 
 
     // example 3
     // int x = 10;
     // int y = 20;
     // auto adderX = adder(x);
-    // auto adderY = adder(y);
-
-    // auto addXY = adderX | adderY;
-    // int res = 30 | addXY();
-
-    // std::cout << res << '\n';
-
-
 
     // int z = adder(x, y);
     // int z2 = adderX(y);

@@ -29,12 +29,9 @@ struct Package{
         return operator|(std::forward<V>(v), *this);
     }
 
-
     inline constexpr Package& operator()(){
         return *this;
     }
-
-
 };
 
 
@@ -64,14 +61,13 @@ struct Composed : Piper<Composed<P1, P2>>{
     template <Packaged P1_, Packaged P2_>
     constexpr Composed(P1_&& f1, P2_&& f2) : p1(std::forward<P1>(f1)), p2(std::forward<P2>(f2)){}
 
-    template <typename T>
-    inline constexpr auto operator()(T&& v) const { // regular syntax
-        return p2(p1(std::forward<T>(v)));
+    template <typename... Types>
+    inline constexpr auto operator()(Types&&... v) const { // regular syntax
+        return p2(p1(std::forward<Types>(v)...));
     }
 
-    template <typename... Types>
-    [[nodiscard]] inline constexpr auto operator()(Types&&... params) const { // returns a package to invoke |
-        return static_cast<const Piper<Composed<P1, P2>>*>(this)->make_package(std::forward<Types>(params)...);
+    [[nodiscard]] inline constexpr auto operator()() const { // returns a package to invoke |
+        return static_cast<const Piper<Composed<P1, P2>>*>(this)->make_package();
     }
 
 };

@@ -107,6 +107,11 @@ void main(){
     auto mapFold = map(doubleIt) | fold(0, std::plus{});
     auto filterMapFold = filter(isEven) | mapFold;
     v | filterMapFold;
+
+
+    func(input) == input | func;
+    slice(str, 1, 6);
+    str | slice(1, 6);
 }
 
 
@@ -128,28 +133,3 @@ class Composer : Piper<Composer> {
     }
 };
 
-template <Packaged P1, Packaged P2>
-struct Composed : Piper<Composed<P1, P2>>{
-    P1 p1;
-    P2 p2;
-
-    template <Packaged P1_, Packaged P2_>
-    constexpr Composed(P1_&& f1, P2_&& f2) : p1(std::forward<P1>(f1)), p2(std::forward<P2>(f2)){}
-
-    template <typename T>
-    inline constexpr auto operator()(T&& v) const { // regular syntax
-        auto size1 = std::tuple_size<decltype(p1.args)>{};
-        auto size2 = std::tuple_size<decltype(p2.args)>{};
-
-        auto Is1 = std::make_index_sequence<size1>{};
-        auto Is2 = std::make_index_sequence<size2>{};
-
-        return piperHelpr(Is2, p2, piperHelpr(Is1, p1, std::forward<T>(v)));
-    }
-
-    template <typename... Types>
-    [[nodiscard]] inline constexpr auto operator()(Types&&... params) const { // returns a package to invoke |
-        return static_cast<const Piper<Composed<P1, P2>>*>(this)->make_package(std::forward<Types>(params)...);
-    }
-
-};

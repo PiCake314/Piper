@@ -11,6 +11,9 @@
 
 
 struct Fold : Piper<Fold>{
+
+    using Piper<Fold>::operator();
+
     template<std::ranges::range V, typename INIT = int, std::invocable<INIT, std::ranges::range_value_t<V>> OP = decltype(std::plus{})>
     constexpr INIT operator()(V&& v, INIT init = 0, OP func = std::plus{}) const {
         for(auto&& elt : v)
@@ -19,15 +22,18 @@ struct Fold : Piper<Fold>{
         return init;
     }
 
-    template<typename INIT = int, typename OP = decltype(std::plus{})>
-    constexpr auto operator()(INIT init = 0, OP func = std::plus{}) const {
-        return static_cast<const Piper*>(this)->make_package(init, func);
-    }
+    // template<typename INIT = int, typename OP = decltype(std::plus{})>
+    // constexpr auto operator()(INIT init = 0, OP func = std::plus{}) const {
+    //     return static_cast<const Piper*>(this)->make_package(init, func);
+    // }
 };
 Fold fold;
 
 
 struct Map : Piper<Map>{
+
+    using Piper<Map>::operator();
+
     template<std::ranges::range V, std::invocable<std::ranges::range_value_t<V>> OP>
     constexpr auto operator()(V&& v, OP func) const {
         // std::vector<std::invoke_result_t<OP, std::ranges::range_value_t<V>>> result;
@@ -44,15 +50,13 @@ struct Map : Piper<Map>{
 
         return result;
     }
-    
-    constexpr auto operator()(auto func) const {
-        return static_cast<const Piper*>(this)->make_package(func);
-    }
 };
 Map map;
 
 
 struct Filter : Piper<Filter>{
+
+    using Piper<Filter>::operator();
     
     template <std::ranges::range V, std::invocable<std::ranges::range_value_t<V>> OP>
     constexpr auto operator()(V v, OP func) const {
@@ -66,63 +70,59 @@ struct Filter : Piper<Filter>{
 
         return v2;
     }
-
-    constexpr auto operator()(auto func) const {
-        return static_cast<const Piper*>(this)->make_package(func);
-    }
 };
 Filter filter;
 
 
 
-struct Slice : Piper<Slice>{
+// struct Slice : Piper<Slice>{
 
-    constexpr std::string operator()(std::string sv, int start, int end) const {
-        return sv.substr(start, end - start);
-    }
-
-
-    auto operator()(int start, int end) const {
-        return static_cast<const Piper*>(this)->make_package(start, end);
-    }
-};
-Slice slicer;
+//     constexpr std::string operator()(std::string sv, int start, int end) const {
+//         return sv.substr(start, end - start);
+//     }
 
 
-struct Adder : Piper<Adder>{
-    constexpr int operator()(int a, int b) const {
-        return a + b;
-    }
-
-    constexpr auto operator()(int x) const {
-        return static_cast<const Piper*>(this)->make_package(x);
-    }
-};
-Adder adder;
+//     auto operator()(int start, int end) const {
+//         return static_cast<const Piper*>(this)->make_package(start, end);
+//     }
+// };
+// Slice slicer;
 
 
-struct VoidS : Piper<VoidS> {
+// struct Adder : Piper<Adder>{
+//     constexpr int operator()(int a, int b) const {
+//         return a + b;
+//     }
 
-    auto operator()(std::string_view sv) const {
-        std::cout << sv;
-    }
+//     constexpr auto operator()(int x) const {
+//         return static_cast<const Piper*>(this)->make_package(x);
+//     }
+// };
+// Adder adder;
 
-    auto operator()()const {
-        return static_cast<const Piper<VoidS>*> (this)->make_package();
-    }
-};
-VoidS voider;
 
-struct Multiplier : Piper<Multiplier>{
-    constexpr int operator()(int a, int b) const {
-        return a * b;
-    }
+// struct VoidS : Piper<VoidS> {
 
-    constexpr auto operator()(int x) const {
-        return static_cast<const Piper*>(this)->make_package(x);
-    }
-};
-Multiplier multiplier;
+//     auto operator()(std::string_view sv) const {
+//         std::cout << sv;
+//     }
+
+//     auto operator()()const {
+//         return static_cast<const Piper<VoidS>*> (this)->make_package();
+//     }
+// };
+// VoidS voider;
+
+// struct Multiplier : Piper<Multiplier>{
+//     constexpr int operator()(int a, int b) const {
+//         return a * b;
+//     }
+
+//     constexpr auto operator()(int x) const {
+//         return static_cast<const Piper*>(this)->make_package(x);
+//     }
+// };
+// Multiplier multiplier;
 
 
 
@@ -139,8 +139,8 @@ int main(){
     // auto capFirst3 = capitalize | first3;
     // std::cout << (name | capFirst3()) << '\n';
 
-    voider("Hello!");
-    "Hello!" | voider();
+    // voider("Hello!");
+    // "Hello!" | voider();
 
     // example 2
     // std::vector vec = {1, 2, 3, 4, 5};
@@ -173,6 +173,10 @@ int main(){
 
     // int res = z | adderX | multY;
     // std::cout << res << '\n';
+
+    std::vector vec = {1, 2, 3, 4, 5};
+    auto sum = vec | map([](auto x){ return x * 3; }) | filter([](auto x){ return x & 1; }) | fold(2);
+    std::cout << sum << '\n';
 
 
 }

@@ -40,7 +40,7 @@ requires std::is_object_v<Derived> && std::same_as<Derived, std::remove_cvref_t<
 class Piper{
 public:
     template <typename... Types>
-    [[nodiscard]] inline constexpr Package<Derived, Types...> make_package(Types... params) const {
+    [[nodiscard]] inline constexpr Package<Derived, Types...> operator()(Types... params) const {
         // I had std::forward here but it was causing problems (UB? or possibly just lifetime issues)
         return {static_cast<const Derived*>(this), {params...}};
     }
@@ -67,7 +67,7 @@ struct Composed : Piper<Composed<P1, P2>>{
     }
 
     [[nodiscard]] inline constexpr auto operator()() const { // returns a package to invoke |
-        return static_cast<const Piper<Composed<P1, P2>>*>(this)->make_package();
+        return static_cast<const Piper<Composed<P1, P2>>*>(this)->operator()();
     }
 
 };
@@ -108,9 +108,3 @@ inline constexpr auto operator|(V&& v, PiperType auto&& p2){
     // return std::forward<V>(v) | p2();
     return operator|(std::forward<V>(v), p2());
 }
-
-
-// // macro to make the above easier
-// #define PIPER_OP(name) constexpr auto operator()(auto... args) const {\
-//     return static_cast<const Piper<name>*>(this)->make_package(std::forward<decltype(args)>(args)...);\
-// }

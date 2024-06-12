@@ -48,8 +48,9 @@ public:
 };
 
 
-template <size_t... Is, typename V>                                                  // doesn't have to be a range
-constexpr auto piperHelpr(std::index_sequence<Is...>, Packaged auto&& p, /* std::ranges::range */ V&& v){ // helps unpack the tuple by index instead of type to avoid ambiguity
+// helps unpack the tuple by index instead of type to avoid ambiguity
+template <size_t... Is, typename V>                                      // doesn't have to be a range
+constexpr auto piperHelpr(std::index_sequence<Is...>, Packaged auto&& p, /* std::ranges::range */ V&& v){
     return p.derived->operator()(std::forward<V>(v), std::forward<decltype(std::get<Is>(p.args))>(std::get<Is>(p.args))...);
 }
 

@@ -75,80 +75,74 @@ Filter filter;
 
 
 
-// struct Slice : Piper<Slice>{
+struct Slice : Piper<Slice>{
 
-//     constexpr std::string operator()(std::string sv, int start, int end) const {
-//         return sv.substr(start, end - start);
-//     }
+    using Piper<Slice>::operator();
 
-
-//     auto operator()(int start, int end) const {
-//         return static_cast<const Piper*>(this)->make_package(start, end);
-//     }
-// };
-// Slice slicer;
+    constexpr std::string operator()(std::string sv, int start, int end) const {
+        return sv.substr(start, end - start);
+    }
+};
+Slice slicer;
 
 
-// struct Adder : Piper<Adder>{
-//     constexpr int operator()(int a, int b) const {
-//         return a + b;
-//     }
+struct Adder : Piper<Adder>{
 
-//     constexpr auto operator()(int x) const {
-//         return static_cast<const Piper*>(this)->make_package(x);
-//     }
-// };
-// Adder adder;
+    using Piper<Adder>::operator();
+
+    constexpr int operator()(int a, int b) const {
+        return a + b;
+    }
+};
+Adder adder;
 
 
-// struct VoidS : Piper<VoidS> {
+struct VoidS : Piper<VoidS> {
 
-//     auto operator()(std::string_view sv) const {
-//         std::cout << sv;
-//     }
+    using Piper<VoidS>::operator();
 
-//     auto operator()()const {
-//         return static_cast<const Piper<VoidS>*> (this)->make_package();
-//     }
-// };
-// VoidS voider;
+    auto operator()(std::string_view sv) const {
+        std::cout << sv << '\n';
+    }
+};
+VoidS voider;
 
-// struct Multiplier : Piper<Multiplier>{
-//     constexpr int operator()(int a, int b) const {
-//         return a * b;
-//     }
 
-//     constexpr auto operator()(int x) const {
-//         return static_cast<const Piper*>(this)->make_package(x);
-//     }
-// };
-// Multiplier multiplier;
+struct Multiplier : Piper<Multiplier>{
+
+    using Piper<Multiplier>::operator();
+
+    constexpr int operator()(int a, int b) const {
+        return a * b;
+    }
+};
+Multiplier multiplier;
 
 
 
-using namespace std::string_literals;
+using std::operator""sv, std::operator""s;
 
 int main(){
 
     // example 1
-    // std::string name = "Ali Almutawa";
+    std::string name = "Ali Almutawa";
 
-    // auto first3 = slicer(0, 3);
-    // auto capitalize = map([](auto&& s){ return std::toupper(s); });
+    auto first3 = slicer(0, 3);
+    auto capitalize = map([](auto&& s){ return std::toupper(s); });
 
-    // auto capFirst3 = capitalize | first3;
-    // std::cout << (name | capFirst3()) << '\n';
+    auto capFirst3 = capitalize | first3;
+    std::cout << (name | capFirst3()) << '\n';
 
-    // voider("Hello!");
-    // "Hello!" | voider();
+    voider("Hello!"sv);
+    "Hello!"sv | voider();
 
     // example 2
-    // std::vector vec = {1, 2, 3, 4, 5};
-    // auto even = filter([](auto n){ return n % 2 == 0; });
-    // auto doubleIt = map([](auto n){ return n * 2; });
-    // auto doubleEvensSum = even | doubleIt | fold;
+    std::vector vec = {1, 2, 3, 4, 5};
+    auto even = filter([](auto n){ return n % 2 == 0; });
+    auto doubleIt = map([](auto n){ return n * 2; });
+    auto doubleEvensSum = even | doubleIt | fold;
 
-    // std::cout << (vec | doubleEvensSum) << '\n';
+    std::cout << (vec | doubleEvensSum) << '\n';
 
 
 
@@ -157,26 +151,26 @@ int main(){
 
 
     // example 3
-    // int x = 10;
-    // int y = 20;
-    // auto adderX = adder(x);
+    int x = 10;
+    int y = 20;
+    auto adderX = adder(x);
 
-    // int z = adder(x, y);
-    // int z2 = adderX(y);
-    // int z3 = y | adder(x);
-    // int z4 = y | adderX();
-    // int z5 = y | adderX;
+    int z = adder(x, y);
+    int z2 = adderX(y);
+    int z3 = y | adder(x);
+    int z4 = y | adderX();
+    int z5 = y | adderX;
 
-    // std::cout << z << ' ' << z2 << ' ' << z3 << ' ' << z4 << ' ' << z5 << '\n';
+    std::cout << z << ' ' << z2 << ' ' << z3 << ' ' << z4 << ' ' << z5 << '\n';
 
-    // auto multY = multiplier(y);
+    auto multY = multiplier(y);
 
-    // int res = z | adderX | multY;
-    // std::cout << res << '\n';
+    int res = z | adderX | multY;
+    std::cout << res << '\n';
 
-    std::vector vec = {1, 2, 3, 4, 5};
-    auto sum = vec | map([](auto x){ return x * 3; }) | filter([](auto x){ return x & 1; }) | fold(2);
-    std::cout << sum << '\n';
+    // std::vector vec = {1, 2, 3, 4, 5};
+    // auto sum = vec | map([](auto x){ return x * 3; }) | filter([](auto x){ return x & 1; }) | fold(2);
+    // std::cout << sum << '\n';
 
 
 }

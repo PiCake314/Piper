@@ -1,3 +1,0 @@
-/Users/alialmutawa/Downloads/Coding/C/Pipes/Piper/build/CMakeFiles/Piper.dir
-/Users/alialmutawa/Downloads/Coding/C/Pipes/Piper/build/CMakeFiles/edit_cache.dir
-/Users/alialmutawa/Downloads/Coding/C/Pipes/Piper/build/CMakeFiles/rebuild_cache.dir

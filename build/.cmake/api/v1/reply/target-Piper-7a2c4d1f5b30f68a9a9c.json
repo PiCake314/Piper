@@ -62,10 +62,6 @@
 				},
 				{
 					"backtrace" : 2,
-					"fragment" : "-Werror"
-				},
-				{
-					"backtrace" : 2,
 					"fragment" : "-O0"
 				}
 			],
